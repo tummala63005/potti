@@ -1,0 +1,124 @@
+How to create a pod
+----------------------
+kubectl run nginx --image nginx
+
+kubectl get pods
+
+kubectl get pods -o wide
+
+curl pod-ip
+
+kubectl describe pod nginx
+
+kubectl delete pod nginx
+
+kubectl get pods
+
+>>>using yaml file
+
+nginx.yaml
+-----------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    name: nginx
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+
+kubectl create -f <filename.yaml>
+kubectl get pod
+kubectl delete pod <podname>
+
+----------------------------------------------------
+
+rc.yml
+------
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 3
+  selector:
+    app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+
+kubectl create -f rc.yml
+
+kubectl get rc
+
+kubectl get pods
+
+kubectl describe rc/nginxreplication
+kubectl describe rc/nginx
+
+kubectl get pods
+
+kubectl delete pods nginxxxx
+
+kubectl get pods
+
+kubectl get rc
+
+kubectl scale --replicas=10 rc/nginx
+
+kubectl get pods
+
+kubectl scale --replicas=3 rc/nginx
+
+kubectl get pods
+--------------------------------------------------------------------------
+
+ReplicaSets
+A ReplicaSet’s purpose is to maintain a stable set of replica Pods running at any given time.
+2. In the replica sets, we used the selector.
+
+3. The selector is used to identifying the Pods it can acquire.
+
+4. a number of replicas indicating how many Pods it should be maintaining.
+
+5. pod template specifying the data of new Pods it should create to meet the number of replicas criteria, When a ReplicaSet needs to create new Pods, it uses its Pod template.
+
+6. using replica set you can easily run multiple pods of given instances.
+
+
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+        - name: httpd
+          image: httpd
+
+kubectl create -f <filename.yaml>
+kubectl get rs
+kubectl scale --replicas=5 -f <filename.yaml>
+kubectl get pod

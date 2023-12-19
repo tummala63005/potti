@@ -1,0 +1,62 @@
+
+1)Launch t2.medium ubuntu 20.04 as k-master
+
+2)Launch t2.micro ubuntu 20.04 as k-WN
+
+3)On master node and worker node both
+
+4)sudo nano install.sh
+
+sudo apt update -y
+sudo apt install docker.io -y
+
+sudo systemctl start docker
+sudo systemctl enable docker
+
+sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt-get update && sudo apt-get install -y apt-transport-https curl
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt update -y
+sudo apt install kubeadm=1.20.0-00 kubectl=1.20.0-00 kubelet=1.20.0-00 -y
+
+5)sudo bash install.sh
+
+
+6) On Master Node
+
+7) kubeadm init 
+
+	-this will generate the join token
+
+        -paste this token on kubernetes WorkerNode
+
+8)  mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+9)kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+10)kubectl get nodes
+
+How to create a pod
+----------------------
+kubectl run nginx --image nginx
+
+kubectl get pods
+
+kubectl get pods -o wide
+
+curl pod-ip
+
+kubectl describe pod nginx
+
+kubectl delete pod nginx
+
+kubectl get pods
+

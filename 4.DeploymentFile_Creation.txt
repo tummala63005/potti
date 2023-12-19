@@ -1,0 +1,157 @@
+========================================================================================
+deployment.yml
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+  labels:
+    tier: frontend
+    app: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  replicas: 3
+  template:
+    metadata:
+      name: nginx-2
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+
+
+
+
+kubectl create -f deployment.yml
+
+kubectl get deployments
+
+kubectl get pods
+
+kubectl describe deployment myapp-deployment
+
+kubectl get all
+
+Rollout and versioning
+----------------------
+kubectl rollout status deployment.apps/myapp-deployment
+
+kubectl rollout history deployment.apps/myapp-deployment
+
+kubectl delete deployment myapp-deployment
+kubectl create -f deployment.yml
+kubectl get pods
+
+kubectl rollout history deployment.apps/myapp-deployment
+
+//observe the change-cause
+
+kubectl describe deployment myapp-deployment
+
+ //observe the annotations
+
+kubectl edit deployment myapp-deployment --record
+
+	//change the image to latest to lower version
+
+	image: nginx:1.24
+kubectl describe deployment myapp-deployment
+
+to set new image using command
+
+kubectl set image deployment myapp-deployment nginx=nginx:1.24-alpine --record
+
+kubectl rollout status deployment/myapp-deployment 
+
+kubectl rollout history deployment/myapp-deployment
+
+kubectl get pods
+kubectl describe deployment myapp-deployment
+How to get previous image
+
+kubectl rollout undo deployment/myapp-deployment
+kubectl rollout status deployment/myapp-deployment 
+kubectl describe deployment myapp-deployment
+
+kubectl edit deployment myapp-deployment --record
+
+	//set image to which doesnot exist
+	
+	image: nginx:1.18-dne
+
+kubectl rollout status deployment/myapp-deployment
+kubectl get deployment myapp-deployment
+kubectl get pods
+
+kubectl rollout history deployment/myapp-deployment
+kubectl rollout undo deployment/myapp-deployment 
+
+kubectl rollout status deployment/myapp-deployment
+kubectl get pods
+
+kubectl describe deployment myapp-deployment
+
+
+
+
+
+
+
+===================================================================
+How to create a Deployment.
+create a deployment.yaml file
+We will create a Deployment configuration file that defines the same state as our ReplicaSet example. Actually, you will notice that the only change between declaring a Deployment and a ReplicaSet is the kind
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+-------------------------------------
+
+1.First, the replicas key sets the number of instances of the pod that the deployment should keep-alive
+
+2.Next, we use a label selector to tell the deployment in which pods are part of the deployment. This essentially says “all the pods matching these labels are grouped in our deployment.”
+
+3.pod template jammed inside our deployment spec. When the deployment creates pods, it will create them using this template.
+
+kubectl create -f <filename.yaml>
+
+kubectl get deployment  ---to check if the Deployment was created.
+
+kubectl rollout status deployment <deploymentname>
+
+-->Updating the deployment
+
+e.x: Let’s update the Nginx Pods to use the nginx:1.16.1 image instead of the nginx:1.14.2 image.
+
+kubectl set image deployment/nginx-deployment nginx=nginx:1.16.1 --record
+
+
+
+
+
+
+
+
+//https://katharharshal1.medium.com/kubernetes-objects-pods-replicasets-and-deployments-44f16b38d9f7
